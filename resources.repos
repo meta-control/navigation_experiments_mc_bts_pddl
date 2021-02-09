@@ -1,0 +1,58 @@
+repositories:
+  turtlebot3/turtlebot3:
+    type: git
+    url: https://github.com/ROBOTIS-GIT/turtlebot3.git
+    version: eloquent-devel
+  turtlebot3/turtlebot3_msgs:
+    type: git
+    url: https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git
+    version: ros2
+  turtlebot3/turtlebot3_simulations:
+    type: git
+    url: https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
+    version: eloquent-devel
+  utils/DynamixelSDK:
+    type: git
+    url: https://github.com/ROBOTIS-GIT/DynamixelSDK.git
+    version: ros2
+  utils/hls_lfcd_lds_driver:
+    type: git
+    url: https://github.com/ROBOTIS-GIT/hls_lfcd_lds_driver.git
+    version: ros2
+  utils/pointcloud_to_laserscan:
+    type: git
+    url: https://github.com/MROS-RobMoSys-ITP/pointcloud_to_laserscan
+    version: managed_node
+  utils/system_modes:
+    type: git
+    url: https://github.com/micro-ROS/system_modes
+    version: feature/rules
+  utils/ros2_knowledge_graph:
+      type: git
+      url: https://github.com/fmrico/ros2_knowledge_graph.git
+      version: master
+  utils/metacontrol_tooling:
+      type: git
+      url: https://github.com/MROS-RobMoSys-ITP/metacontrol_tooling.git
+      version: master
+  utils/mros_ontology:
+      type: git
+      url: https://github.com/MROS-RobMoSys-ITP/mros_ontology.git
+      version: main
+  navigation2:
+    type: git
+    url: https://github.com/ros-planning/navigation2.git
+    version: foxy-devel
+  Pilot-URJC:
+    type: git
+    url: https://github.com/MROS-RobMoSys-ITP/Pilot-URJC.git
+    version: master
+  mc_mros_reasoner:
+    type: git
+    url: https://github.com/tud-cor/mc_mros_reasoner.git
+    version: foxy_devel
+  mros_modes_observer:
+    type: git
+    url: https://github.com/MROS-RobMoSys-ITP/mros_modes_observer.git
+    version: main
+
