@@ -29,7 +29,7 @@ Fetch, build and install navigation2 stack:
   sudo apt install ros-foxy-slam-toolbox ros-foxy-gazebo-ros-pkgs python3-vcstool python3-rosdep2 python3-colcon-common-extensions
 
   cd [ros2_ws]/src
-  wget https://raw.githubusercontent.com/MROS-RobMoSys-ITP/MROS-Hands-On/main/mros-hands-on.repos
+  wget https://raw.githubusercontent.com/tud-cor/navigation_experiments_mc_bts_pddl/main/resources.repos
   vcs import < resources.repos
   cd ..
   rosdep install -y -r -q --from-paths src --ignore-src --rosdistro foxy --skip-keys="turtlebot2_drivers map_server astra_camera amcl"
@@ -42,7 +42,7 @@ This launcher includes gazebo, pointcloud_to_laser, laser_driver_wrapper, and **
 The **system_modes mode_manager** takes the modes description from `navigation_experiments_mc_bts_pddl/params/pilot_modes.yaml`.
 
 ```console
-  export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:[ros2_ws]/src/turtlebot3/turtlebot3_simulations/turtlebot3_gazebo/models:[ros2_ws]/src/navigation_experiments_mc_bts_pddl/worlds/models
+  export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:[ros2_ws]/src/turtlebot3/turtlebot3_simulations/turtlebot3_gazebo/models:[ros2_ws]/src/navigation_experiments_mc_bts_pddl/navigation_experiments_mc_bts_pddl/worlds/models
   export TURTLEBOT3_MODEL=${TB3_MODEL}
   ros2 launch navigation_experiments_mc_bts_pddl tb3_sim_launch.py
 ```
@@ -67,7 +67,7 @@ This step launches the `mros2_metacontroller`, it launches by default the `kb.ow
 
 ![waypoints](resources/waypoints.png)
 
-We have developed a behavior to go through a set of waypoints autonomously. It is implemented using a simple [BehaviorTree](https://github.com/lot_behavior/behavior_trees/bt.xml)
+We have developed a behavior to go through a set of waypoints autonomously. It is implemented using a simple [BehaviorTree](https://github.com/tud-cor/navigation_experiments_mc_bts_pddl/blob/main/navigation_experiments_bts/behavior_trees/bt.xml)
 
 ```console
   ros2 launch navigation_experiments_bts bt_controller_launch.py
