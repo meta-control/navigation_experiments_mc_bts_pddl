@@ -1,4 +1,4 @@
-# navigation_experiments_mc_bts_pddl
+# navigation_experiments_mc_bts_pddl_base
 A tutorial to get the MROS ecosystem fully working to perform the experiments programming a navigation task with metacontrol, with behavior trees and PDDL.
 
 ## Table of Contents
@@ -29,7 +29,7 @@ Fetch, build and install navigation2 stack:
   sudo apt install ros-foxy-slam-toolbox ros-foxy-gazebo-ros-pkgs python3-vcstool python3-rosdep2 python3-colcon-common-extensions
 
   cd [ros2_ws]/src
-  wget https://raw.githubusercontent.com/tud-cor/navigation_experiments_mc_bts_pddl/main/resources.repos
+  wget https://raw.githubusercontent.com/tud-cor/navigation_experiments_mc_bts_pddl_base/main/resources.repos
   vcs import < resources.repos
   cd ..
   rosdep install -y -r -q --from-paths src --ignore-src --rosdistro foxy --skip-keys="turtlebot2_drivers map_server astra_camera amcl"
@@ -39,12 +39,12 @@ Fetch, build and install navigation2 stack:
 ## Starting with a Turtlebo3 in Gazebo.
 Let's start opening Gazebo with a tb3.
 This launcher includes gazebo, pointcloud_to_laser, laser_driver_wrapper, and **[system-modes](https://github.com/micro-ROS/system_modes)**.
-The **system_modes mode_manager** takes the modes description from `navigation_experiments_mc_bts_pddl/params/pilot_modes.yaml`.
+The **system_modes mode_manager** takes the modes description from `navigation_experiments_mc_bts_pddl_base/params/pilot_modes.yaml`.
 
 ```console
-  export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:[ros2_ws]/src/turtlebot3/turtlebot3_simulations/turtlebot3_gazebo/models:[ros2_ws]/src/navigation_experiments_mc_bts_pddl/navigation_experiments_mc_bts_pddl/worlds/models
+  export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:[ros2_ws]/src/turtlebot3/turtlebot3_simulations/turtlebot3_gazebo/models:[ros2_ws]/src/navigation_experiments_mc_bts_pddl_base/navigation_experiments_mc_bts_pddl_base/worlds/models
   export TURTLEBOT3_MODEL=${TB3_MODEL}
-  ros2 launch navigation_experiments_mc_bts_pddl tb3_sim_launch.py
+  ros2 launch navigation_experiments_mc_bts_pddl_base tb3_sim_launch.py
 ```
 - After the last command, Gazebo window is opened and you should see a tb3 in a domestic scenario.
 
@@ -52,7 +52,7 @@ The **system_modes mode_manager** takes the modes description from `navigation_e
 This launcher includes rviz, nav2, amcl, and map-server.
 
 ```console
-  ros2 launch navigation_experiments_mc_bts_pddl nav2_turtlebot3_launch.py
+  ros2 launch navigation_experiments_mc_bts_pddl_base nav2_turtlebot3_launch.py
 ```
 - RVIz opens, and the navigation system is waiting for the activation of the laser_driver. This activation will be made automatically by the metacontroller in the next step. It is not necessary to set an initial robot position with the 2D Pose Estimate tool. When the laser_driver is up, the pose will be set automatically.
 
@@ -67,12 +67,11 @@ This step launches the `mros2_metacontroller`, it launches by default the `kb.ow
 
 ![waypoints](resources/waypoints.png)
 
-We have developed a behavior to go through a set of waypoints autonomously. It is implemented using a simple [BehaviorTree](https://github.com/tud-cor/navigation_experiments_mc_bts_pddl/blob/main/navigation_experiments_bts/behavior_trees/bt.xml)
+We have developed a behavior to go through a set of waypoints autonomously. It is implemented using a simple [BehaviorTree](https://github.com/tud-cor/navigation_experiments_mc_bts_pddl_base/blob/main/navigation_experiments_mc_bts/behavior_trees/bt.xml)
 
 ```console
-  ros2 launch navigation_experiments_bts bt_controller_launch.py
+  ros2 launch navigation_experiments_mc_bts bt_controller_launch.py
 ```
-
 
 ## MROS managing contingencies.
 Currently, we are supporting two contingencies, a laser sensor failure and battery low.
