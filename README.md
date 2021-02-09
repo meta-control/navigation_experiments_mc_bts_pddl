@@ -63,14 +63,14 @@ This step launches the `mros2_metacontroller`, it launches by default the `kb.ow
   ros2 launch mros2_reasoner launch_reasoner.launch.py
 ```
 
-## Autonomous navigation. Patrol mission.
+## Autonomous navigation. Behavior tree patrol mission. 
 
 ![waypoints](resources/waypoints.png)
 
-We have developed a behavior to go through a set of waypoints autonomously. It is implemented using a simple [BehaviorTree](https://github.com/MROS-RobMoSys-ITP/Pilot-URJC/blob/master/pilot_behavior/behavior_trees/bt.xml)
+We have developed a behavior to go through a set of waypoints autonomously. It is implemented using a simple [BehaviorTree](https://github.com/lot_behavior/behavior_trees/bt.xml)
 
 ```console
-  ros2 launch pilot_behavior pilot_urjc_launch.py
+  ros2 launch navigation_experiments_bts bt_controller_launch.py
 ```
 
 
