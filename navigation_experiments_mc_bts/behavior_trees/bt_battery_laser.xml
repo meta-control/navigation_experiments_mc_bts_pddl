@@ -35,7 +35,7 @@
                 <SetParam  name="set_param" goal="laser_parameters"/> <!-- ADD HERE THE ADAPTATION NODE FOR CHANGING PARAMETERS-->>
             </Sequence>
             <Sequence>
-                <ChecCamera   name="check_camera"/> <!-- ADD HERE THE NODE FOR CONDITION CHECK, RETURNS TRUE IF CAMERA IS WORKING-->>
+                <CheckCamera   name="check_camera"/> <!-- ADD HERE THE NODE FOR CONDITION CHECK, RETURNS TRUE IF CAMERA IS WORKING-->>
                 <SetComponent  name="set_component" goal="camera"/> <!-- ADD HERE THE ADAPTATION NODE FOR CHANGING COMPONENT-->>
                 <SetParam  name="set_param" goal="camera_parameters"/> <!-- ADD HERE THE ADAPTATION NODE FOR CHANGING PARAMETERS-->>
             </Sequence>
