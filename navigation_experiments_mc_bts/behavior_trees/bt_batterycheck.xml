@@ -1,0 +1,26 @@
+<root main_tree_to_execute = "MainTree" >
+    <BehaviorTree ID="MainTree">
+        <ReactiveSequence name="root_sequence">
+            <Fallback>
+                <CheckBattery   name="check_battery"/> <!-- ADD HERE THE NODE FOR CONDITION CHECK, RETURNS TRUE IF BATTERY IS ENOUGH-->>
+                <Sequence name="patrolling">
+                    <SetMode  name="set_mode" goal="low_battery"/> <!-- ADD HERE THE ADAPTATION NODE FOR CHANGING MODE TO LOW BATTERY WHILE GOING RECHARGING-->>
+                    <NavigateToWp   name="navigate_to_wp" goal="recharge_station"/>
+                    <Recharge/>
+                </Sequence>
+            </Fallback>
+            <Sequence>
+                <SetMode  name="set_mode" goal="normal"/> <!-- ADD HERE THE ADAPTATION NODE FOR CHANGING MODE TO NORMAL WHEN PATROLLING-->>
+                </SequenceStar>
+                    <NavigateToWp   name="navigate_to_wp" goal="wp_1"/>
+                    <NavigateToWp   name="navigate_to_wp" goal="wp_2"/>
+                    <NavigateToWp   name="navigate_to_wp" goal="wp_3"/>
+                    <NavigateToWp   name="navigate_to_wp" goal="wp_4"/>
+                    <NavigateToWp   name="navigate_to_wp" goal="wp_5"/>
+                    <NavigateToWp   name="navigate_to_wp" goal="wp_6"/>
+                    <NavigateToWp   name="navigate_to_wp" goal="wp_7"/>
+                </SequenceStar>  
+            </Sequence>                  
+        </ReactiveSequence>
+     </BehaviorTree>
+</root>

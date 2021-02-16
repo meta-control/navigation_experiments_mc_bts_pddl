@@ -42,7 +42,7 @@ This launcher includes gazebo, pointcloud_to_laser, laser_driver_wrapper, and **
 The **system_modes mode_manager** takes the modes description from `navigation_experiments_mc_bts_pddl_base/params/pilot_modes.yaml`.
 
 ```console
-  export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:[ros2_ws]/src/turtlebot3/turtlebot3_simulations/turtlebot3_gazebo/models:[ros2_ws]/src/navigation_experiments_mc_bts_pddl_base/navigation_experiments_mc_bts_pddl_base/worlds/models
+  export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:[ros2_ws]/src/turtlebot3/turtlebot3_simulations/turtlebot3_gazebo/models:[ros2_ws]/src/navigation_experiments_mc_bts_pddl/navigation_experiments_mc_bts_pddl_base/worlds/models
   export TURTLEBOT3_MODEL=${TB3_MODEL}
   ros2 launch navigation_experiments_mc_bts_pddl_base tb3_sim_launch.py
 ```

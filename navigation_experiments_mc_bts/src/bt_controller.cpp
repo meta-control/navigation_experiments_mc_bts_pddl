@@ -56,11 +56,11 @@ int main(int argc, char ** argv)
   std::unordered_map<std::string, geometry_msgs::msg::Pose> wp_map;
   geometry_msgs::msg::Pose wp;
   wp.position.x = 1.0;  // URJC Real scenario 9.0
-  wp.position.y = -1.0; //                    47.0
+  wp.position.y = -1.5; //                    47.0
   wp.orientation = nav2_util::geometry_utils::orientationAroundZAxis(M_PI_2);
   wp_map.insert(std::pair<std::string, geometry_msgs::msg::Pose>("wp_1", wp));
-  wp.position.x = -1.0; // URJC Real scenario 20.0
-  wp.position.y = 1.0;  //                    47.0
+  wp.position.x = -1.5; // URJC Real scenario 20.0
+  wp.position.y = 1.5;  //                    47.0
   wp.orientation = nav2_util::geometry_utils::orientationAroundZAxis(M_PI);
   wp_map.insert(std::pair<std::string, geometry_msgs::msg::Pose>("wp_2", wp));
 
@@ -84,13 +84,13 @@ int main(int argc, char ** argv)
   wp.orientation = nav2_util::geometry_utils::orientationAroundZAxis(M_PI_2);
   wp_map.insert(std::pair<std::string, geometry_msgs::msg::Pose>("wp_6", wp));
 
-  wp.position.x = -1.0;
-  wp.position.y = 1.0;
+  wp.position.x = -1.5;
+  wp.position.y = 1.5;
   wp.orientation = nav2_util::geometry_utils::orientationAroundZAxis(0.0);
   wp_map.insert(std::pair<std::string, geometry_msgs::msg::Pose>("wp_7", wp));
 
-  wp.position.x = 4.0;
-  wp.position.y = -3.0;
+  wp.position.x = -1.5;
+  wp.position.y = 2.5;
   wp.orientation = nav2_util::geometry_utils::orientationAroundZAxis(0.0);
   wp_map.insert(std::pair<std::string, geometry_msgs::msg::Pose>("recharge_station", wp));
 
@@ -98,7 +98,7 @@ int main(int argc, char ** argv)
 
   BT::Tree tree = factory.createTreeFromFile(xml_file, blackboard);
 
-  rclcpp::Rate rate(1);
+  rclcpp::Rate rate(1.0);
   bool finished = false;
   while (rclcpp::ok() && !finished) {
     finished = tree.rootNode()->executeTick() == BT::NodeStatus::SUCCESS;

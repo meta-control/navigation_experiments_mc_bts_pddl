@@ -1,3 +1,8 @@
+# List of repositories to use within your workspace
+# See https://github.com/dirk-thomas/vcstool
+############ 
+# Example:
+############
 repositories:
   turtlebot3/turtlebot3:
     type: git
@@ -23,26 +28,14 @@ repositories:
     type: git
     url: https://github.com/MROS-RobMoSys-ITP/pointcloud_to_laserscan
     version: managed_node
-  utils/system_modes:
-    type: git
-    url: https://github.com/micro-ROS/system_modes
-    version: feature/rules
   utils/ros2_knowledge_graph:
       type: git
       url: https://github.com/fmrico/ros2_knowledge_graph.git
-      version: master
-  utils/metacontrol_tooling:
-      type: git
-      url: https://github.com/MROS-RobMoSys-ITP/metacontrol_tooling.git
       version: master
   utils/mros_ontology:
       type: git
       url: https://github.com/MROS-RobMoSys-ITP/mros_ontology.git
       version: main
-  navigation2:
-    type: git
-    url: https://github.com/ros-planning/navigation2.git
-    version: foxy-devel
   Pilot-URJC:
     type: git
     url: https://github.com/MROS-RobMoSys-ITP/Pilot-URJC.git
@@ -55,4 +48,7 @@ repositories:
     type: git
     url: https://github.com/MROS-RobMoSys-ITP/mros_modes_observer.git
     version: main
-
+  navigation_experiments_mc_bts_pddl:
+    type: git
+    url:  https://github.com/tud-cor/navigation_experiments_mc_bts_pddl.git
+    version: main

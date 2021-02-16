@@ -1,0 +1,45 @@
+<root main_tree_to_execute = "MainTree" >
+    <BehaviorTree ID="MainTree">
+        <ReactiveSequence name="root_sequence">
+            <Fallback>
+                <CheckBattery   name="check_battery"/> <!-- ADD HERE THE NODE FOR CONDITION CHECK-->>
+                <Sequence name="patrolling">
+                    <SetMode  name="set_mode" goal="low_battery"/> <!-- ADD HERE THE ADAPTATION NODE FOR CHANGING MODE-->>
+                    <NavigateToWp   name="navigate_to_wp" goal="recharge_station"/>
+                    <Recharge/>
+                </Sequence>
+            </Fallback>
+            <Subtree ID="ComponentsSelection"/>
+            <Sequence>
+                <SetMode  name="set_mode" goal="normal"/> <!-- ADD HERE THE ADAPTATION NODE FOR CHANGING MODE-->>
+                <Subtree ID="ComponentsSelection"/>
+                </SequenceStar>
+                    <NavigateToWp   name="navigate_to_wp" goal="wp_1"/>
+                    <NavigateToWp   name="navigate_to_wp" goal="wp_2"/>
+                    <NavigateToWp   name="navigate_to_wp" goal="wp_3"/>
+                    <NavigateToWp   name="navigate_to_wp" goal="wp_4"/>
+                    <NavigateToWp   name="navigate_to_wp" goal="wp_5"/>
+                    <NavigateToWp   name="navigate_to_wp" goal="wp_6"/>
+                    <NavigateToWp   name="navigate_to_wp" goal="wp_7"/>
+                </SequenceStar>  
+            </Sequence>                  
+        </ReactiveSequence>
+     </BehaviorTree>
+
+    <!--Subtree for selection of the sensor (laser or camera)-->>
+    <BehaviorTree ID="ComponentsSelection">
+        <Fallback>
+            <Sequence>
+                <CheckLaser   name="check_laser"/> <!-- ADD HERE THE NODE FOR CONDITION CHECK, RETURNS TRUE IF LASER IS WORKING-->>
+                <SetComponent  name="set_component" goal="laser"/> <!-- ADD HERE THE ADAPTATION NODE FOR CHANGING COMPONENT-->>
+                <SetParam  name="set_param" goal="laser_parameters"/> <!-- ADD HERE THE ADAPTATION NODE FOR CHANGING PARAMETERS-->>
+            </Sequence>
+            <Sequence>
+                <CheckCamera   name="check_camera"/> <!-- ADD HERE THE NODE FOR CONDITION CHECK, RETURNS TRUE IF CAMERA IS WORKING-->>
+                <SetComponent  name="set_component" goal="camera"/> <!-- ADD HERE THE ADAPTATION NODE FOR CHANGING COMPONENT-->>
+                <SetParam  name="set_param" goal="camera_parameters"/> <!-- ADD HERE THE ADAPTATION NODE FOR CHANGING PARAMETERS-->>
+            </Sequence>
+        <?Fallback>
+    </BehaviorTree>  
+     
+</root>
