@@ -46,12 +46,14 @@ void NavigateToWp::on_tick()
   diagnostic_msgs::msg::KeyValue safety_qos;
   safety_qos.key = "safety";
   safety_qos.value = "0.5";
+  goal_.qos_expected.qos.clear();
   goal_.qos_expected.qos.push_back(energy_qos);
   goal_.qos_expected.qos.push_back(safety_qos);
 }
 
 void NavigateToWp::on_wait_for_result()
 {  
+  RCLCPP_INFO(node_->get_logger(), "Curr mode: %s ", feedback_->qos_status.selected_mode.c_str()); 
   // check selected_mode, f_energy_saving_mode means the robot needs battery.
   if (feedback_->qos_status.selected_mode == "f_energy_saving_mode" && 
       getInput<std::string>("goal").value() != "recharge_station") {
