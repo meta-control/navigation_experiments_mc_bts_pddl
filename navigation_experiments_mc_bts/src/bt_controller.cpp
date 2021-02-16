@@ -90,7 +90,7 @@ int main(int argc, char ** argv)
   wp_map.insert(std::pair<std::string, geometry_msgs::msg::Pose>("wp_7", wp));
 
   wp.position.x = -1.5;
-  wp.position.y = 1.5;
+  wp.position.y = 2.5;
   wp.orientation = nav2_util::geometry_utils::orientationAroundZAxis(0.0);
   wp_map.insert(std::pair<std::string, geometry_msgs::msg::Pose>("recharge_station", wp));
 
@@ -98,7 +98,7 @@ int main(int argc, char ** argv)
 
   BT::Tree tree = factory.createTreeFromFile(xml_file, blackboard);
 
-  rclcpp::Rate rate(1);
+  rclcpp::Rate rate(1.0);
   bool finished = false;
   while (rclcpp::ok() && !finished) {
     finished = tree.rootNode()->executeTick() == BT::NodeStatus::SUCCESS;
