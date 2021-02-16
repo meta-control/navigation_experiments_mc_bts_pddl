@@ -11,7 +11,6 @@ waypoint
 (:predicates
 
 (robot_at ?r - robot ?wp - waypoint)
-(connected ?wp1 ?wp2 - waypoint)
 (patrolled ?wp - waypoint)
 (battery_enough ?r - robot)
 (battery_low ?r - robot)
@@ -27,7 +26,6 @@ waypoint
     :parameters (?r - robot ?wp1 ?wp2 - waypoint)
     :duration ( = ?duration 5)
     :condition (and
-        (at start(connected ?wp1 ?wp2))
         (at start(robot_at ?r ?wp1))
         (over all(battery_enough ?r))
         )
@@ -66,6 +64,7 @@ waypoint
     :duration ( = ?duration 5)
     :condition (and
         (at start(robot_at ?r ?wp))
+        (at start(battery_low ?r))
         (at start(charging_point_at ?wp))
     )
     :effect (and

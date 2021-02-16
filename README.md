@@ -63,14 +63,25 @@ This step launches the `mros2_metacontroller`, it launches by default the `kb.ow
   ros2 launch mros2_reasoner launch_reasoner.launch.py
 ```
 
-## Autonomous navigation. Behavior tree patrol mission. 
+## Autonomous navigation. 
 
 ![waypoints](resources/waypoints.png)
+
+### Behavior tree patrol mission. 
 
 We have developed a behavior to go through a set of waypoints autonomously. It is implemented using a simple [BehaviorTree](https://github.com/tud-cor/navigation_experiments_mc_bts_pddl_base/blob/main/navigation_experiments_mc_bts/behavior_trees/bt.xml)
 
 ```console
   ros2 launch navigation_experiments_mc_bts bt_controller_launch.py
+```
+
+### PDDL patrol mission. 
+
+In this case the controller is implemented using [pddl](https://github.com/tud-cor/navigation_experiments_mc_bts_pddl_base/blob/main/navigation_experiments_mc_pddl/pddl/patrol_w_recharge.pddl)
+
+```console
+  ros2 launch navigation_experiments_mc_pddl pddl_controller_launch.py
+  ros2 run navigation_experiments_mc_pddl patrolling_controller_node
 ```
 
 ## MROS managing contingencies.
@@ -106,9 +117,7 @@ mros2_reasoner_node-1] [INFO] [1603183654.050846253] [mros2_reasoner_node]: Ente
 
 #### Simulating the battery drining.
 
-The battery of the robot is drining based on the movements of the robot. The metacontroller window shows the battery consumption (0.0 - 1.0). This battery level represents the Energy QA for the metacontroller.
-
-![mros_reasoner_battery_log](resources/mros_reasoner_battery_log.png)
+The battery of the robot is drining based on the movements of the robot. tb3_sim window shows the battery level (1.0 - 0.0). This battery level represents the Energy QA for the metacontroller.
 
 - The battery level is sent to the metacontroller as a QA value using the `/diagnostic` topic (See https://github.com/ros2/common_interfaces/blob/foxy/diagnostic_msgs/msg/DiagnosticArray.msg)
 
@@ -120,34 +129,42 @@ mros2_reasoner_node-1] [INFO] [1603183654.050846253] [mros2_reasoner_node]: Ente
 [mros2_reasoner_node-1] [INFO] [1603183654.781165253] [mros2_reasoner_node]:      >> Finished ontological reasoning)
 ```
 
-- When the battery goes over a gthreshold `0.5`  a reconfiguration is required
+- When the battery goes over a threshold `0.5`  a reconfiguration is required. The battery_contingency_node sents a diagnostics msg to the metacontroller advertising that the battery is not enough.
 - The metacontroller searchs the for a new mode, and marks the current one as failed.
 
 ```
-[mros2_reasoner_node-1] FGs:
-[mros2_reasoner_node-1] [INFO] [1603183666.750156602] [mros2_reasoner_node]: QA value received!	TYPE: energy	VALUE: 0.538985
-[mros2_reasoner_node-1] WARNING:root: fg_f_performance_mode	objective: kb_hands_on.o_navigateA	status: None	FD: kb_hands_on.f_performance_mode, 	QAvalues: [('energy', 0.538985)]
-[mros2_reasoner_node-1] WARNING:root:
-[mros2_reasoner_node-1] OBJECTIVE	|  STATUS	|  NFRs
-[mros2_reasoner_node-1] WARNING:root:o_navigateA	|  INTERNAL_ERROR	|  [('energy', 0.5), ('safety', 0.5)]
-[mros2_reasoner_node-1] [WARN] [1603183666.751149736] [mros2_reasoner_node]: Objectives in status ERROR: ['o_navigateA']
-[mros2_reasoner_node-1] [INFO] [1603183666.751405032] [mros2_reasoner_node]:   >> Finished MAPE-K ** ANALYSIS **
-[mros2_reasoner_node-1] [INFO] [1603183666.751651488] [mros2_reasoner_node]:   >> Started MAPE-K ** PLAN adaptation **
-[mros2_reasoner_node-1] [INFO] [1603183666.751896213] [mros2_reasoner_node]: => Reasoner searches FD for objective: o_navigateA
-[mros2_reasoner_node-1] WARNING:root:== FunctionDesigns available for obj: ['f_degraded_mode', 'f_energy_saving_mode', 'f_normal_mode', 'f_performance_mode', 'f_slow_mode']
-[mros2_reasoner_node-1] WARNING:root:Objective NFR ENERGY: [kb_hands_on.nfr_energy, kb_hands_on.nfr_safety]
-[mros2_reasoner_node-1] WARNING:root:== Checking FDs for Objective with NFRs type: energy and value 0.5 
-[mros2_reasoner_node-1] WARNING:root:== FunctionDesigns also meeting NFRs: ['f_slow_mode']
-[mros2_reasoner_node-1] WARNING:root:> Best FD available f_slow_mode
+[mros2_reasoner_node-1] [INFO] [1613476795.519762331] [mros2_reasoner_node]:   >> Started MAPE-K ** Analysis (ontological reasoning) **
+[mros2_reasoner_node-1] [WARN] [1613476796.161156157] [mros2_reasoner_node]: Objective e51f829f591afb02b19efe375bf2f90 in status: IN_ERROR_COMPONENT
+[mros2_reasoner_node-1] [INFO] [1613476796.161521288] [mros2_reasoner_node]:   >> Started MAPE-K ** PLAN adaptation **
+[mros2_reasoner_node-1] [INFO] [1613476796.161860404] [mros2_reasoner_node]:   >> Reasoner searches an FD 
+
 ```
+
 - The new mode is changed using the `/change mode` service provided by the system modes. 
 
 ```
-[mros2_reasoner_node-1] [INFO] [1603183666.752534090] [mros2_reasoner_node]:   >> Finished MAPE-K ** Plan adaptation **
-[mros2_reasoner_node-1] [INFO] [1603183666.752783762] [mros2_reasoner_node]:   >> Started MAPE-K ** EXECUTION **
-[mros2_reasoner_node-1] [WARN] [1603183666.753033650] [mros2_reasoner_node]: New Configuration requested: f_slow_mode
-[mros2_reasoner_node-1] [INFO] [1603183666.757148442] [mros2_reasoner_node]: Got service result True
-[mros2_reasoner_node-1] [INFO] [1603183666.759040367] [mros2_reasoner_node]: = RECONFIGURATION SUCCEEDED =
-[mros2_reasoner_node-1] [INFO] [1603183666.759511555] [mros2_reasoner_node]:   >> Finished MAPE-K ** EXECUTION **
+[mros2_reasoner_node-1] WARNING:root:			 == Obatin Best Function Design ==
+[mros2_reasoner_node-1] WARNING:root:== FunctionDesigns AVAILABLE: ['f_degraded_mode', 'f_energy_saving_mode', 'f_normal_mode', 'f_performance_mode', 'f_slow_mode']
+[mros2_reasoner_node-1] WARNING:root:== FunctionDesigns REALISABLE: ['f_energy_saving_mode']
+[mros2_reasoner_node-1] WARNING:root:== FunctionDesigns NOT IN ERROR LOG: ['f_energy_saving_mode']
+[mros2_reasoner_node-1] WARNING:root:== FunctionDesigns also meeting NFRs: ['f_energy_saving_mode']
+[mros2_reasoner_node-1] WARNING:root:== Utility for f_energy_saving_mode : 0.300000
+[mros2_reasoner_node-1] WARNING:root:			 == Best FD available f_energy_saving_mode
+[mros2_reasoner_node-1] [INFO] [1613476796.162774887] [mros2_reasoner_node]:   >> Started MAPE-K ** EXECUTION **
+[mros2_reasoner_node-1] [WARN] [1613476796.163110077] [mros2_reasoner_node]: New Configuration requested: f_energy_saving_mode
+[mros2_reasoner_node-1] [INFO] [1613476796.166859840] [mros2_reasoner_node]: Got Reconfiguration result True
+[mros2_reasoner_node-1] [INFO] [1613476796.168155123] [mros2_reasoner_node]: Exited timer_cb after successful reconfiguration - Obj set to None
+[mros2_reasoner_node-1] [INFO] [1613476797.016818483] [mros2_reasoner_node]: QA value received!	TYPE: energy	VALUE: 0.473608
+[mros2_reasoner_node-1] [INFO] [1613476797.274176134] [mros2_reasoner_node]: Cancel Action Callback!
+[mros2_reasoner_node-1] WARNING:root:			 >>> Ontology Status   <<<
+[mros2_reasoner_node-1] WARNING:root:
+[mros2_reasoner_node-1] 	Component Status:	[('battery', 'FALSE')]
+[mros2_reasoner_node-1] WARNING:root:
+[mros2_reasoner_node-1] 	FG: fg_f_energy_saving_mode  Status: None  Solves: e51f829f591afb02b19efe375bf2f90  FD: f_energy_saving_mode  QAvalues: [('energy', 0.473608)]
+[mros2_reasoner_node-1] WARNING:root:
+[mros2_reasoner_node-1] 	OBJECTIVE: e51f829f591afb02b19efe375bf2f90   Status: None   NFRs:  [('energy', 0.5), ('safety', 0.5)]
+
 ```
 
+#### Recharging behavior.
+Once the `f_energy_saving_mode` is set, the current action should be canceled and the recharge protocol takes action. The robot goes to the recharge station, waits until the battery is recharged, and then it returns to the patrolling mission.

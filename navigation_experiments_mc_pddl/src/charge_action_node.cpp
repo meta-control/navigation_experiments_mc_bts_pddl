@@ -19,6 +19,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
+#include "std_srvs/srv/empty.hpp"
 
 using namespace std::chrono_literals;
 
@@ -29,6 +30,8 @@ public:
   : plansys2::ActionExecutorClient("charge", 500ms)
   {
     progress_ = 0.0;
+    client_ = create_client<std_srvs::srv::Empty>("battery_contingency/battery_charged");
+
   }
 
 private:
@@ -39,7 +42,7 @@ private:
       send_feedback(progress_, "Charge running");
     } else {
       finish(true, 1.0, "Charge completed");
-
+      srvCall();
       progress_ = 0.0;
       std::cout << std::endl;
     }
@@ -49,6 +52,21 @@ private:
       std::flush;
   }
 
+  void srvCall()
+  {
+  auto request = std::make_shared<std_srvs::srv::Empty::Request>();
+  while (!client_->wait_for_service(1s)) {
+    if (!rclcpp::ok()) {
+      RCLCPP_ERROR(get_logger(), "Interrupted while waiting for the service. Exiting.");
+      return;
+    }
+    RCLCPP_INFO(get_logger(), "service not available, waiting again...");
+  }
+
+  auto result = client_->async_send_request(request);
+}
+
+  rclcpp::Client<std_srvs::srv::Empty>::SharedPtr client_;
   float progress_;
 };
 

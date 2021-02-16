@@ -45,16 +45,11 @@ public:
     problem_expert_->addInstance(plansys2::Instance{"wp2", "waypoint"});
     problem_expert_->addInstance(plansys2::Instance{"wp3", "waypoint"});
     problem_expert_->addInstance(plansys2::Instance{"wp4", "waypoint"});
+    problem_expert_->addInstance(plansys2::Instance{"wp_aux", "waypoint"});
 
     problem_expert_->addPredicate(plansys2::Predicate("(robot_at r2d2 wp_control)"));
-    problem_expert_->addPredicate(plansys2::Predicate("(connected wp_control wp1)"));
-    problem_expert_->addPredicate(plansys2::Predicate("(connected wp1 wp_control)"));
-    problem_expert_->addPredicate(plansys2::Predicate("(connected wp_control wp2)"));
-    problem_expert_->addPredicate(plansys2::Predicate("(connected wp2 wp_control)"));
-    problem_expert_->addPredicate(plansys2::Predicate("(connected wp_control wp3)"));
-    problem_expert_->addPredicate(plansys2::Predicate("(connected wp3 wp_control)"));
-    problem_expert_->addPredicate(plansys2::Predicate("(connected wp_control wp4)"));
-    problem_expert_->addPredicate(plansys2::Predicate("(connected wp4 wp_control)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(battery_enough r2d2)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(charging_point_at wp_control)"));
   }
 
   void step()
@@ -71,7 +66,7 @@ public:
       case PATROL_WP1:
         {
           auto feedback = executor_client_->getFeedBack();
-
+          
           for (const auto & action_feedback : feedback.action_execution_status) {
             std::cout << "[" << action_feedback.action << " " <<
               action_feedback.completion * 100.0 << "%]";

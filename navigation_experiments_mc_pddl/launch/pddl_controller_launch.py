@@ -20,7 +20,13 @@ from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, SetEnvironmentVariable
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
+import launch  # noqa: E402
+import launch.actions  # noqa: E402
+import launch.events  # noqa: E402
 
+import launch_ros.actions  # noqa: E402
+import launch_ros.events  # noqa: E402
+import launch_ros.events.lifecycle  # noqa: E402
 
 def generate_launch_description():
     # Get the launch directory
@@ -65,12 +71,13 @@ def generate_launch_description():
         name='ask_charge_action_node',
         output='screen',
         parameters=[])
-    pddl_controller_cmd = Node(
-        package='navigation_experiments_mc_pddl',
-        executable='patrolling_controller_node',
-        name='patrolling_controller_node',
-        output='screen',
-        parameters=[])
+
+    #pddl_controller_cmd = Node(
+    #    package='navigation_experiments_mc_pddl',
+    #    executable='patrolling_controller_node',
+    #    name='patrolling_controller_node',
+    #    output='screen',
+    #    parameters=[])
 
     # Create the launch description and populate
     ld = LaunchDescription()
@@ -85,5 +92,5 @@ def generate_launch_description():
     ld.add_action(patrol_cmd)
     ld.add_action(charge_cmd)
     ld.add_action(ask_charge_cmd)
-    ld.add_action(pddl_controller_cmd)
+    #ld.add_action(pddl_controller_cmd)
     return ld

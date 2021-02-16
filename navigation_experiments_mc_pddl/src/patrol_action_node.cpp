@@ -54,33 +54,34 @@ public:
 private:
   void do_work()
   {
-    if (progress_ < 1.0) {
-      progress_ += 0.1;
-
-      send_feedback(progress_, "Patrol running");
-
-      geometry_msgs::msg::Twist cmd;
-      cmd.linear.x = 0.0;
-      cmd.linear.y = 0.0;
-      cmd.linear.z = 0.0;
-      cmd.angular.x = 0.0;
-      cmd.angular.y = 0.0;
-      cmd.angular.z = 0.5;
-
-      cmd_vel_pub_->publish(cmd);
-    } else {
-      geometry_msgs::msg::Twist cmd;
-      cmd.linear.x = 0.0;
-      cmd.linear.y = 0.0;
-      cmd.linear.z = 0.0;
-      cmd.angular.x = 0.0;
-      cmd.angular.y = 0.0;
-      cmd.angular.z = 0.0;
-
-      cmd_vel_pub_->publish(cmd);
-
-      finish(true, 1.0, "Patrol completed");
-    }
+    //if (progress_ < 1.0) {
+    //  progress_ += 0.1;
+//
+    //  send_feedback(progress_, "Patrol running");
+//
+    //  geometry_msgs::msg::Twist cmd;
+    //  cmd.linear.x = 0.0;
+    //  cmd.linear.y = 0.0;
+    //  cmd.linear.z = 0.0;
+    //  cmd.angular.x = 0.0;
+    //  cmd.angular.y = 0.0;
+    //  cmd.angular.z = 0.5;
+//
+    //  cmd_vel_pub_->publish(cmd);
+    //} else {
+    //  geometry_msgs::msg::Twist cmd;
+    //  cmd.linear.x = 0.0;
+    //  cmd.linear.y = 0.0;
+    //  cmd.linear.z = 0.0;
+    //  cmd.angular.x = 0.0;
+    //  cmd.angular.y = 0.0;
+    //  cmd.angular.z = 0.0;
+//
+    //  cmd_vel_pub_->publish(cmd);
+//
+    //  finish(true, 1.0, "Patrol completed");
+    //}
+    finish(true, 1.0, "Patrol completed");
   }
 
   float progress_;

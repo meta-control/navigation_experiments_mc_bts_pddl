@@ -8,6 +8,8 @@ find_package(rclcpp_action REQUIRED)
 find_package(plansys2_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav2_msgs REQUIRED)
+find_package(mros2_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
 find_package(plansys2_executor REQUIRED)
 find_package(plansys2_domain_expert REQUIRED)
 
@@ -21,6 +23,8 @@ set(dependencies
     plansys2_executor
     plansys2_problem_expert
     plansys2_domain_expert
+    mros2_msgs
+    std_srvs
 )
 
 add_executable(move_action_node src/move_action_node.cpp)

@@ -22,6 +22,8 @@
 #include "geometry_msgs/msg/pose_stamped.hpp"
 #include "geometry_msgs/msg/pose.hpp"
 #include "geometry_msgs/msg/pose_with_covariance_stamped.hpp"
+#include "mros2_msgs/action/navigate_to_pose_qos.hpp"
+
 #include "nav2_msgs/action/navigate_to_pose.hpp"
 #include "nav2_util/geometry_utils.hpp"
 
@@ -31,13 +33,14 @@
 #include "rclcpp_action/rclcpp_action.hpp"
 
 using namespace std::chrono_literals;
+using NavigateToPoseQos = mros2_msgs::action::NavigateToPoseQos;
 
 class MoveAction : public plansys2::ActionExecutorClient
 {
 public:
   MoveAction()
   : plansys2::ActionExecutorClient("move", 500ms)
-  {
+  {    
     geometry_msgs::msg::PoseStamped wp;
     wp.header.frame_id = "/map";
     wp.pose.position.x = 1.0;
@@ -72,6 +75,9 @@ public:
       "/amcl_pose",
       10,
       std::bind(&MoveAction::current_pos_callback, this, _1));
+    private_node_ = rclcpp::Node::make_shared("pr_move_node");
+    problem_expert_ = std::make_shared<plansys2::ProblemExpertClient>(private_node_);
+    battery_low_ = false;
   }
 
   void current_pos_callback(const geometry_msgs::msg::PoseWithCovarianceStamped::SharedPtr msg)
@@ -82,12 +88,12 @@ public:
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
   on_activate(const rclcpp_lifecycle::State & previous_state)
   {
+    battery_low_ = false;
     send_feedback(0.0, "Move starting");
-
     navigation_action_client_ =
-      rclcpp_action::create_client<nav2_msgs::action::NavigateToPose>(
+      rclcpp_action::create_client<NavigateToPoseQos>(
       shared_from_this(),
-      "navigate_to_pose");
+      "navigate_to_pose_qos");
 
     bool is_action_server_ready = false;
     do {
@@ -99,20 +105,36 @@ public:
 
     RCLCPP_INFO(get_logger(), "Navigation action server ready");
 
-    auto wp_to_navigate = get_arguments()[2];  // The goal is in the 3rd argument of the action
-    RCLCPP_INFO(get_logger(), "Start navigation to [%s]", wp_to_navigate.c_str());
+    wp_to_navigate_ = get_arguments()[2];  // The goal is in the 3rd argument of the action
+    RCLCPP_INFO(get_logger(), "Start navigation to [%s]", wp_to_navigate_.c_str());
 
-    goal_pos_ = waypoints_[wp_to_navigate];
+    goal_pos_ = waypoints_[wp_to_navigate_];
     navigation_goal_.pose = goal_pos_;
-
+    navigation_goal_.qos_expected.objective_type = "f_navigate"; // should be mros_goal->qos_expected.objective_type = "f_navigate";
+    diagnostic_msgs::msg::KeyValue energy_qos;
+    energy_qos.key = "energy";
+    energy_qos.value = "0.5";
+    diagnostic_msgs::msg::KeyValue safety_qos;
+    safety_qos.key = "safety";
+    safety_qos.value = "0.5";
+    navigation_goal_.qos_expected.qos.push_back(energy_qos);
+    navigation_goal_.qos_expected.qos.push_back(safety_qos);
     dist_to_move = getDistance(goal_pos_.pose, current_pos_);
 
     auto send_goal_options =
-      rclcpp_action::Client<nav2_msgs::action::NavigateToPose>::SendGoalOptions();
+      rclcpp_action::Client<NavigateToPoseQos>::SendGoalOptions();
 
     send_goal_options.feedback_callback = [this](
       NavigationGoalHandle::SharedPtr,
       NavigationFeedback feedback) {
+        if (feedback->qos_status.selected_mode == "f_energy_saving_mode") 
+        {
+          problem_expert_->removePredicate(plansys2::Predicate("(battery_enough r2d2)"));
+          problem_expert_->addPredicate(plansys2::Predicate("(battery_low r2d2)"));
+          problem_expert_->addPredicate(plansys2::Predicate("(robot_at r2d2 wp_aux)"));
+          battery_low_ = true;
+          return;
+        }
         send_feedback(
           std::min(1.0, std::max(0.0, 1.0 - (feedback->distance_remaining / dist_to_move))),
           "Move running");
@@ -124,7 +146,6 @@ public:
 
     future_navigation_goal_handle_ =
       navigation_action_client_->async_send_goal(navigation_goal_, send_goal_options);
-
     return ActionExecutorClient::on_activate(previous_state);
   }
 
@@ -138,25 +159,35 @@ private:
 
   void do_work()
   {
+    if (battery_low_)
+    {
+      RCLCPP_WARN(get_logger(), "Battery low, cancelling move action ...");
+      finish(false, 0.0, "Not enough battery");
+      navigation_action_client_->async_cancel_all_goals();
+    }
   }
 
   std::map<std::string, geometry_msgs::msg::PoseStamped> waypoints_;
 
   using NavigationGoalHandle =
-    rclcpp_action::ClientGoalHandle<nav2_msgs::action::NavigateToPose>;
+    rclcpp_action::ClientGoalHandle<NavigateToPoseQos>;
   using NavigationFeedback =
-    const std::shared_ptr<const nav2_msgs::action::NavigateToPose::Feedback>;
+    const std::shared_ptr<const NavigateToPoseQos::Feedback>;
 
-  rclcpp_action::Client<nav2_msgs::action::NavigateToPose>::SharedPtr navigation_action_client_;
+  rclcpp_action::Client<NavigateToPoseQos>::SharedPtr navigation_action_client_;
   std::shared_future<NavigationGoalHandle::SharedPtr> future_navigation_goal_handle_;
   NavigationGoalHandle::SharedPtr navigation_goal_handle_;
 
   rclcpp::Subscription<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr pos_sub_;
   geometry_msgs::msg::Pose current_pos_;
   geometry_msgs::msg::PoseStamped goal_pos_;
-  nav2_msgs::action::NavigateToPose::Goal navigation_goal_;
+  NavigateToPoseQos::Goal navigation_goal_;
 
+  std::shared_ptr<plansys2::ProblemExpertClient> problem_expert_;
+  std::shared_ptr<rclcpp::Node> private_node_;
   double dist_to_move;
+  std::string wp_to_navigate_;
+  bool battery_low_;
 };
 
 int main(int argc, char ** argv)
