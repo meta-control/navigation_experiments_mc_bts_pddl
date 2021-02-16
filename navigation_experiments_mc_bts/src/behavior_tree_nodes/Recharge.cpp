@@ -34,11 +34,13 @@ BT::NodeStatus Recharge::tick()
 {
   while(rclcpp::ok()) {
     RCLCPP_INFO(node_->get_logger(), "Recharging battery for 10 seconds");
-    rclcpp::Rate(0.1).sleep();
+    rclcpp::Rate(0.2).sleep();
     srv_call();
+    rclcpp::Rate(0.2).sleep();
     break;
   }
   RCLCPP_INFO(node_->get_logger(), "Battery fully recharged");
+
   return BT::NodeStatus::SUCCESS;
 }
 
