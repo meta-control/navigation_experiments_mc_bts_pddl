@@ -39,7 +39,9 @@ void NavigateToWp::on_tick()
   wp_ = wp_map[res];
   RCLCPP_INFO(node_->get_logger(), "Navigating to... [%s -- %f %f]",
     res.c_str(), wp_.position.x, wp_.position.y);
-  goal_.pose.pose = wp_;
+  goal_.pose.pose.position = wp_.position;
+  goal_.pose.pose.orientation = wp_.orientation;
+  //goal_.pose.pose = wp_;
   goal_.qos_expected.objective_type = "f_navigate"; // should be mros_goal->qos_expected.objective_type = "f_navigate";
   diagnostic_msgs::msg::KeyValue energy_qos;
   energy_qos.key = "energy";
@@ -59,10 +61,28 @@ void NavigateToWp::on_wait_for_result()
   if (feedback_->qos_status.selected_mode == "f_energy_saving_mode" && 
       getInput<std::string>("goal").value() != "recharge_station") {
     RCLCPP_ERROR(node_->get_logger(), "Not enough energy");
+    
+    auto component_map = 
+      config().blackboard->get<std::unordered_map<std::string, bool>>("component_map");
+
+    RCLCPP_ERROR(node_->get_logger(), "Set battery to false");
+    component_map["battery"]=false;
     halt();
     result_.code = rclcpp_action::ResultCode::ABORTED;
     goal_result_available_ = true;
   }
+  else if (feedback_->qos_status.selected_mode == "f_degraded_mode")
+  {
+    RCLCPP_ERROR(node_->get_logger(), "Laser Scanner failed");
+    auto component_map =
+      config().blackboard->get<std::unordered_map<std::string, bool>>("component_map");
+    RCLCPP_ERROR(node_->get_logger(), "Set laser to false");
+    component_map["laser"]=false;
+    halt();
+    result_.code = rclcpp_action::ResultCode::ABORTED;
+    goal_result_available_ = true;
+  }
+
 }
 
 BT::NodeStatus NavigateToWp::on_success()

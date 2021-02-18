@@ -45,6 +45,8 @@ int main(int argc, char ** argv)
   BT::SharedLibrary loader;
   factory.registerFromPlugin(loader.getOSName("navigation_experiments_mc_bts_navigate_to_wp_bt_node"));
   factory.registerFromPlugin(loader.getOSName("navigation_experiments_mc_bts_recharge_bt_node"));
+  factory.registerFromPlugin(loader.getOSName("navigation_experiments_mc_bts_reconfigure_bt_node"));
+  factory.registerFromPlugin(loader.getOSName("navigation_experiments_mc_bts_check_component_bt_node"));
 
   auto blackboard = BT::Blackboard::create();
   auto node = rclcpp::Node::make_shared("pilot_node");
@@ -95,6 +97,15 @@ int main(int argc, char ** argv)
   wp_map.insert(std::pair<std::string, geometry_msgs::msg::Pose>("recharge_station", wp));
 
   blackboard->set("wp_map", wp_map);  
+
+  // Create blackboar for component status
+  std::unordered_map<std::string, bool> component_map;
+
+  component_map.insert(std::pair<std::string, bool>("battery", true));
+  component_map.insert(std::pair<std::string, bool>("camera", true));
+  component_map.insert(std::pair<std::string, bool>("laser", true));
+
+  blackboard->set("component_map", component_map); 
 
   BT::Tree tree = factory.createTreeFromFile(xml_file, blackboard);
 

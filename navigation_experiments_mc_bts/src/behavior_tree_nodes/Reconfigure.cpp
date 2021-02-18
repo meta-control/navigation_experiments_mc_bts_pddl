@@ -15,51 +15,66 @@
 #include <string>
 #include <memory>
 
-#include "navigation_experiments_mc_bts/behavior_tree_nodes/Recharge.hpp"
+#include "navigation_experiments_mc_bts/behavior_tree_nodes/Reconfigure.hpp"
 using namespace std::chrono_literals;
 
 namespace navigation_experiments_mc_bts
 {
 
-Recharge::Recharge(
+Reconfigure::Reconfigure(
   const std::string & action_name,
   const BT::NodeConfiguration & conf)
 : BT::AsyncActionNode(action_name, conf)
 {
   node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
-  client_ = node_->create_client<std_srvs::srv::Empty>("battery_contingency/battery_charged");
+  client_ = node_->create_client<system_modes::srv::ChangeMode>("/pilot/change_mode");
 }
 
-BT::NodeStatus Recharge::tick()
+BT::NodeStatus Reconfigure::tick()
 {
-  while(rclcpp::ok()) {
-    RCLCPP_INFO(node_->get_logger(), "Recharging battery for 10 seconds");
-    rclcpp::Rate(0.2).sleep();
-    srv_call();
-    rclcpp::Rate(0.2).sleep();
-    break;
+  auto new_mode = getInput<std::string>("mode").value();
+  RCLCPP_INFO(node_->get_logger(), "Reconfiguring system mode to %s", new_mode.c_str());
+  if (reconfigure_srv_call(new_mode))
+  {
+    rclcpp::Rate(1.0).sleep();
+    return BT::NodeStatus::SUCCESS;
   }
-  RCLCPP_INFO(node_->get_logger(), "Battery fully recharged");
-  auto component_map = 
-      config().blackboard->get<std::unordered_map<std::string, bool>>("component_map");
-
-  RCLCPP_ERROR(node_->get_logger(), "Set battery to true");
-  component_map["battery"]=true;
-  return BT::NodeStatus::SUCCESS;
+  else
+  {
+    return BT::NodeStatus::FAILURE;
+  }
 }
+  
 
-void Recharge::srv_call() 
+bool Reconfigure::reconfigure_srv_call(std::string new_mode) 
 {
-  auto request = std::make_shared<std_srvs::srv::Empty::Request>();
+  auto request = std::make_shared<system_modes::srv::ChangeMode::Request>();
+
+  request->mode_name = new_mode;
+  
   while (!client_->wait_for_service(1s)) {
     if (!rclcpp::ok()) {
       RCLCPP_ERROR(node_->get_logger(), "Interrupted while waiting for the service. Exiting.");
-      return;
+      return false;
     }
     RCLCPP_INFO(node_->get_logger(), "service not available, waiting again...");
   }
 
   auto result = client_->async_send_request(request);
+  // Wait for the result.
+  if (rclcpp::spin_until_future_complete(node_, result) ==
+    rclcpp::FutureReturnCode::SUCCESS)
+  {
+    RCLCPP_INFO(node_->get_logger(), "System mode correctly changed");
+    return true;
+
+  } 
+  else
+  {
+    RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Failed to call service change_mode");
+    return false;
+  }
+
 }
 
 }  // namespace navigation_experiments_mc_bts
@@ -70,10 +85,10 @@ BT_REGISTER_NODES(factory)
   BT::NodeBuilder builder =
     [](const std::string & name, const BT::NodeConfiguration & config)
     {
-      return std::make_unique<navigation_experiments_mc_bts::Recharge>(
+      return std::make_unique<navigation_experiments_mc_bts::Reconfigure>(
         name, config);
     };
 
-  factory.registerBuilder<navigation_experiments_mc_bts::Recharge>(
-    "Recharge", builder);
+  factory.registerBuilder<navigation_experiments_mc_bts::Reconfigure>(
+    "Reconfigure", builder);
 }

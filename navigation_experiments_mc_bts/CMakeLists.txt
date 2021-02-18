@@ -17,6 +17,7 @@ find_package(nav2_msgs REQUIRED)
 find_package(behaviortree_cpp_v3 REQUIRED)
 find_package(mros2_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
+find_package(system_modes REQUIRED)
 
 include_directories(
   include
@@ -32,6 +33,7 @@ set(dependencies
   behaviortree_cpp_v3
   mros2_msgs
   std_srvs
+  system_modes
 )
 
 
@@ -44,6 +46,17 @@ add_library(navigation_experiments_mc_bts_recharge_bt_node SHARED
   src/behavior_tree_nodes/Recharge.cpp
 )
 list(APPEND plugin_libs navigation_experiments_mc_bts_recharge_bt_node)
+
+add_library(navigation_experiments_mc_bts_reconfigure_bt_node SHARED
+  src/behavior_tree_nodes/Reconfigure.cpp
+)
+list(APPEND plugin_libs navigation_experiments_mc_bts_reconfigure_bt_node)
+
+add_library(navigation_experiments_mc_bts_check_component_bt_node SHARED
+  src/behavior_tree_nodes/CheckComponent.cpp
+)
+list(APPEND plugin_libs navigation_experiments_mc_bts_check_component_bt_node)
+
 
 foreach(bt_plugin ${plugin_libs})
   ament_target_dependencies(${bt_plugin} ${dependencies})
