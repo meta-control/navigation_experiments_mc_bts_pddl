@@ -10,6 +10,7 @@ find_package(geometry_msgs REQUIRED)
 find_package(nav2_msgs REQUIRED)
 find_package(mros2_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
+find_package(system_modes REQUIRED)
 find_package(plansys2_executor REQUIRED)
 find_package(plansys2_domain_expert REQUIRED)
 
@@ -25,6 +26,7 @@ set(dependencies
     plansys2_domain_expert
     mros2_msgs
     std_srvs
+    system_modes
 )
 
 add_executable(move_action_node src/move_action_node.cpp)
@@ -39,8 +41,14 @@ ament_target_dependencies(charge_action_node ${dependencies})
 add_executable(ask_charge_action_node src/ask_charge_action_node.cpp)
 ament_target_dependencies(ask_charge_action_node ${dependencies})
 
+add_executable(reconfigure_action_node src/reconfigure_action_node.cpp)
+ament_target_dependencies(reconfigure_action_node ${dependencies})
+
 add_executable(patrolling_controller_node src/patrolling_controller_node.cpp)
 ament_target_dependencies(patrolling_controller_node ${dependencies})
+
+add_executable(patrolling_reconfig_controller_node src/patrolling_reconfig_controller_node.cpp)
+ament_target_dependencies(patrolling_reconfig_controller_node ${dependencies})
 
 install(DIRECTORY launch pddl DESTINATION share/${PROJECT_NAME})
 
@@ -49,7 +57,9 @@ install(TARGETS
   patrol_action_node
   charge_action_node
   ask_charge_action_node
+  reconfigure_action_node
   patrolling_controller_node
+  patrolling_reconfig_controller_node
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION lib/${PROJECT_NAME}
