@@ -164,6 +164,15 @@ def generate_launch_description():
         executable='mode_manager',
         parameters=[{'modelfile': shm_model_path}],
         output='screen')
+    
+    reconfig_time_node = Node(
+        package='navigation_experiments_mc_bts_pddl_log',
+        executable='reconfig_time',
+        output='screen')
+    topics_2_csv_node = Node(
+        package='navigation_experiments_mc_bts_pddl_log',
+        executable='topics_2_csv',
+        output='screen')
 
     ld = LaunchDescription()
 
@@ -185,6 +194,8 @@ def generate_launch_description():
     
     # Add system modes observer node
     ld.add_action(modes_observer_node)
+    ld.add_action(reconfig_time_node)
+    ld.add_action(topics_2_csv_node)
 
     ld.add_action(pcl2laser_cmd)
     ld.add_action(laser_resender_cmd)

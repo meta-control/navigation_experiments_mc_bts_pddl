@@ -48,13 +48,16 @@ public:
     problem_expert_->addInstance(plansys2::Instance{"wp_aux", "waypoint"});
     problem_expert_->addInstance(plansys2::Instance{"f_normal_mode", "mode"});
     problem_expert_->addInstance(plansys2::Instance{"f_energy_saving_mode", "mode"});
-
+    problem_expert_->addInstance(plansys2::Instance{"f_degraded_mode", "mode"});
+    problem_expert_->addInstance(plansys2::Instance{"f_start_mode", "mode"});
     problem_expert_->addPredicate(plansys2::Predicate("(robot_at r2d2 wp_control)"));
     problem_expert_->addPredicate(plansys2::Predicate("(battery_enough r2d2)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(nav_sensor r2d2)"));
     problem_expert_->addPredicate(plansys2::Predicate("(charging_point_at wp_control)"));
     problem_expert_->addPredicate(plansys2::Predicate("(battery_low_mode f_energy_saving_mode)"));
     problem_expert_->addPredicate(plansys2::Predicate("(normal_mode f_normal_mode)"));
-
+    problem_expert_->addPredicate(plansys2::Predicate("(degraded_mode f_degraded_mode)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(current_system_mode f_start_mode)"));
   }
 
   void step()

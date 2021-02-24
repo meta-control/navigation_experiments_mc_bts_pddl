@@ -41,8 +41,14 @@ ament_target_dependencies(charge_action_node ${dependencies})
 add_executable(ask_charge_action_node src/ask_charge_action_node.cpp)
 ament_target_dependencies(ask_charge_action_node ${dependencies})
 
+add_executable(degraded_move_action_node src/degraded_move_action_node.cpp)
+ament_target_dependencies(degraded_move_action_node ${dependencies})
+
 add_executable(reconfigure_action_node src/reconfigure_action_node.cpp)
 ament_target_dependencies(reconfigure_action_node ${dependencies})
+
+add_executable(recover_nav_sensor_node src/recover_nav_sensor_node.cpp)
+ament_target_dependencies(recover_nav_sensor_node ${dependencies})
 
 add_executable(patrolling_controller_node src/patrolling_controller_node.cpp)
 ament_target_dependencies(patrolling_controller_node ${dependencies})
@@ -57,7 +63,9 @@ install(TARGETS
   patrol_action_node
   charge_action_node
   ask_charge_action_node
+  degraded_move_action_node
   reconfigure_action_node
+  recover_nav_sensor_node
   patrolling_controller_node
   patrolling_reconfig_controller_node
   ARCHIVE DESTINATION lib

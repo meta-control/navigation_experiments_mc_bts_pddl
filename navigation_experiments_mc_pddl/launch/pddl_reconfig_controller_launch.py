@@ -20,13 +20,13 @@ from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, SetEnvironmentVariable
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
-import launch  # noqa: E402
-import launch.actions  # noqa: E402
-import launch.events  # noqa: E402
+import launch
+import launch.actions
+import launch.events
 
-import launch_ros.actions  # noqa: E402
-import launch_ros.events  # noqa: E402
-import launch_ros.events.lifecycle  # noqa: E402
+import launch_ros.actions
+import launch_ros.events
+import launch_ros.events.lifecycle
 
 def generate_launch_description():
     # Get the launch directory
@@ -72,12 +72,27 @@ def generate_launch_description():
         output='screen',
         parameters=[])
     
+    degraded_move_cmd = Node(
+        package='navigation_experiments_mc_pddl',
+        executable='degraded_move_action_node',
+        name='degraded_move_action_node',
+        output='screen',
+        parameters=[])
+    
     reconfigure_cmd = Node(
         package='navigation_experiments_mc_pddl',
         executable='reconfigure_action_node',
         name='reconfigure_action_node',
         output='screen',
         parameters=[])
+    
+    recover_nav_sensor_cmd = Node(
+        package='navigation_experiments_mc_pddl',
+        executable='recover_nav_sensor_node',
+        name='recover_nav_sensor_node',
+        output='screen',
+        parameters=[])
+
 
     #pddl_controller_cmd = Node(
     #    package='navigation_experiments_mc_pddl',
@@ -99,6 +114,8 @@ def generate_launch_description():
     ld.add_action(patrol_cmd)
     ld.add_action(charge_cmd)
     ld.add_action(ask_charge_cmd)
+    ld.add_action(degraded_move_cmd)
     ld.add_action(reconfigure_cmd)
+    ld.add_action(recover_nav_sensor_cmd)
     #ld.add_action(pddl_controller_cmd)
     return ld
