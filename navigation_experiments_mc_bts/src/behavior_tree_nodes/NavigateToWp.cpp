@@ -66,8 +66,10 @@ void NavigateToWp::on_wait_for_result()
       config().blackboard->get<std::unordered_map<std::string, bool>>("component_map");
 
     RCLCPP_ERROR(node_->get_logger(), "Set battery to false");
-    component_map["battery"]=false;
+    auto battery_component = component_map.find("battery");
+    battery_component->second = false;
     halt();
+    config().blackboard->set("component_map", component_map); 
     result_.code = rclcpp_action::ResultCode::ABORTED;
     goal_result_available_ = true;
   }
@@ -77,8 +79,10 @@ void NavigateToWp::on_wait_for_result()
     auto component_map =
       config().blackboard->get<std::unordered_map<std::string, bool>>("component_map");
     RCLCPP_ERROR(node_->get_logger(), "Set laser to false");
-    component_map["laser"]=false;
+     auto battery_component = component_map.find("laser");
+    battery_component->second = false;
     halt();
+    config().blackboard->set("component_map", component_map); 
     result_.code = rclcpp_action::ResultCode::ABORTED;
     goal_result_available_ = true;
   }

@@ -44,7 +44,11 @@ BT::NodeStatus Recharge::tick()
       config().blackboard->get<std::unordered_map<std::string, bool>>("component_map");
 
   RCLCPP_ERROR(node_->get_logger(), "Set battery to true");
-  component_map["battery"]=true;
+  
+  auto battery_component = component_map.find("battery");
+  battery_component->second = true;
+
+  config().blackboard->set("component_map", component_map); 
   return BT::NodeStatus::SUCCESS;
 }
 
