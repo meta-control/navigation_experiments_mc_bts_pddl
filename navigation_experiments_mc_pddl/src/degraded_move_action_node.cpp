@@ -85,6 +85,7 @@ public:
     diagnostic_msgs::msg::KeyValue safety_qos;
     safety_qos.key = "safety";
     safety_qos.value = "0.5";
+    navigation_goal_.qos_expected.qos.clear();
     navigation_goal_.qos_expected.qos.push_back(energy_qos);
     navigation_goal_.qos_expected.qos.push_back(safety_qos);
     dist_to_move = getDistance(goal_pos_.pose, current_pos_);

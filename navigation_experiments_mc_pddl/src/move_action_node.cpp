@@ -106,6 +106,8 @@ public:
     RCLCPP_INFO(get_logger(), "Navigation action server ready");
 
     wp_to_navigate_ = get_arguments()[2];  // The goal is in the 3rd argument of the action
+    current_mode_ = get_arguments()[3];  // The mode is in the 4rd argument of the action
+
     RCLCPP_INFO(get_logger(), "Start navigation to [%s]", wp_to_navigate_.c_str());
 
     goal_pos_ = waypoints_[wp_to_navigate_];
@@ -113,10 +115,11 @@ public:
     navigation_goal_.qos_expected.objective_type = "f_navigate"; // should be mros_goal->qos_expected.objective_type = "f_navigate";
     diagnostic_msgs::msg::KeyValue energy_qos;
     energy_qos.key = "energy";
-    energy_qos.value = "0.5";
+    energy_qos.value = "0.7";
     diagnostic_msgs::msg::KeyValue safety_qos;
     safety_qos.key = "safety";
     safety_qos.value = "0.5";
+    navigation_goal_.qos_expected.qos.clear();
     navigation_goal_.qos_expected.qos.push_back(energy_qos);
     navigation_goal_.qos_expected.qos.push_back(safety_qos);
     dist_to_move = getDistance(goal_pos_.pose, current_pos_);
@@ -124,7 +127,9 @@ public:
     auto send_goal_options =
       rclcpp_action::Client<NavigateToPoseQos>::SendGoalOptions();
 
-    send_goal_options.feedback_callback = [this](
+    if (current_mode_ == "f_normal_mode")
+    {
+      send_goal_options.feedback_callback = [this](
       NavigationGoalHandle::SharedPtr,
       NavigationFeedback feedback) {
         if (feedback->qos_status.selected_mode == "f_energy_saving_mode") 
@@ -145,6 +150,17 @@ public:
           std::min(1.0, std::max(0.0, 1.0 - (feedback->distance_remaining / dist_to_move))),
           "Move running");
       };
+    } 
+    else
+    {
+      send_goal_options.feedback_callback = [this](
+      NavigationGoalHandle::SharedPtr,
+      NavigationFeedback feedback) {
+        send_feedback(
+          std::min(1.0, std::max(0.0, 1.0 - (feedback->distance_remaining / dist_to_move))),
+          "Move running");
+      };
+    }
 
     send_goal_options.result_callback = [this](auto) {
         finish(true, 1.0, "Move completed");
@@ -192,7 +208,7 @@ private:
   std::shared_ptr<plansys2::ProblemExpertClient> problem_expert_;
   std::shared_ptr<rclcpp::Node> private_node_;
   double dist_to_move;
-  std::string wp_to_navigate_;
+  std::string wp_to_navigate_, current_mode_;
   bool sys_issue_detected_;
 };
 

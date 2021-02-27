@@ -33,7 +33,6 @@ mode
         (at start(robot_at ?r ?wp1))
         (over all(battery_enough ?r))
         (over all(nav_sensor ?r))
-        (over all(normal_mode ?m))
         (over all(current_system_mode ?m))
         )
     :effect (and
@@ -87,22 +86,6 @@ mode
     :effect (and
         (at start(not(robot_at ?r ?wp1)))
         (at start(robot_at ?r ?wp2))
-    )
-)
-
-(:durative-action degraded_move
-    :parameters (?r - robot ?wp1 ?wp2 - waypoint ?m - mode)
-    :duration ( = ?duration 6)
-    :condition (and
-        (at start(robot_at ?r ?wp1))
-        (at start(degraded_mode ?m))
-        (at start(current_system_mode ?m))
-        (over all(battery_enough ?r))
-        (over all(nav_sensor ?r))
-        )
-    :effect (and
-        (at start(not(robot_at ?r ?wp1)))
-        (at end(robot_at ?r ?wp2))
     )
 )
 
