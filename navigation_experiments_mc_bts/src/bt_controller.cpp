@@ -92,7 +92,7 @@ int main(int argc, char ** argv)
   wp_map.insert(std::pair<std::string, geometry_msgs::msg::Pose>("wp_7", wp));
 
   wp.position.x = -1.5;
-  wp.position.y = 2.5;
+  wp.position.y = 3.0;
   wp.orientation = nav2_util::geometry_utils::orientationAroundZAxis(0.0);
   wp_map.insert(std::pair<std::string, geometry_msgs::msg::Pose>("recharge_station", wp));
 

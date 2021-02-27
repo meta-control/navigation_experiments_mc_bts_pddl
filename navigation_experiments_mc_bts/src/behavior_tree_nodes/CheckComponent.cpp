@@ -41,6 +41,7 @@ BT::NodeStatus CheckComponent::tick()
     throw BT::RuntimeError("missing required input [component]");
   }
 
+  RCLCPP_ERROR(node_->get_logger(), "Component %s - state %s", requested_component.c_str(), component_map[requested_component] ? "true" : "false");
   if (component_map[requested_component] == true)
   {
     return BT::NodeStatus::SUCCESS;

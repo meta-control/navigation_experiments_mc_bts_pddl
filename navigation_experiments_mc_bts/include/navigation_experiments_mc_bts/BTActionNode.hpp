@@ -137,6 +137,9 @@ public:
       on_new_goal_received();
     }
 
+    rclcpp::Rate(1.0).sleep(); //  Wait.
+    rclcpp::spin_some(node_);
+
     // The following code corresponds to the "RUNNING" loop
     if (rclcpp::ok() && !goal_result_available_) {
       // user defined callback. May modify the value of "goal_updated_"
@@ -179,7 +182,10 @@ public:
   void halt() override
   {
     if (should_cancel_goal()) {
-      auto future_cancel = action_client_->async_cancel_goal(goal_handle_);
+      RCLCPP_ERROR(
+          node_->get_logger(),
+          "Cancelling Previous goals");
+      auto future_cancel = action_client_->async_cancel_all_goals();
       if (rclcpp::spin_until_future_complete(node_, future_cancel) !=
         rclcpp::FutureReturnCode::SUCCESS)
       {
