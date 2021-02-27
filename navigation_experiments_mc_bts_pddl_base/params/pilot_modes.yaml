@@ -85,25 +85,25 @@ controller_server:
     modes:
       __DEFAULT__:
         ros__parameters:
-          FollowPath.max_vel_x: 0.3
-          FollowPath.max_speed_xy: 0.3
+          FollowPath.max_vel_x: 0.6
+          FollowPath.max_speed_xy: 0.6
           FollowPath.max_vel_theta: 1.25
           FollowPath.transform_tolerance: 0.2
       SLOW:
         ros__parameters:
-          FollowPath.max_vel_x: 0.1
-          FollowPath.max_speed_xy: 0.1
-          FollowPath.max_vel_theta: 0.5
+          FollowPath.max_vel_x: 0.4
+          FollowPath.max_speed_xy: 0.4
+          FollowPath.max_vel_theta: 1.0
           FollowPath.transform_tolerance: 0.2
       FAST:
         ros__parameters:
-          FollowPath.max_vel_x: 0.5
-          FollowPath.max_speed_xy: 0.5
+          FollowPath.max_vel_x: 0.8
+          FollowPath.max_speed_xy: 0.8
           FollowPath.max_vel_theta: 1.5
           FollowPath.transform_tolerance: 0.2
       DEGRADED:
         ros__parameters:
-          FollowPath.max_vel_x: 0.1
-          FollowPath.max_speed_xy: 0.1
-          FollowPath.max_vel_theta: 0.5
+          FollowPath.max_vel_x: 0.25
+          FollowPath.max_speed_xy: 0.25
+          FollowPath.max_vel_theta: 0.7
           FollowPath.transform_tolerance: 2.5
