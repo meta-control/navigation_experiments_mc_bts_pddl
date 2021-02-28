@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<root main_tree_to_execute="MainTree">
+    <!-- ////////// -->
+    <BehaviorTree ID="MainTree">
+        <Sequence>
+            <Fallback>
+                <Action ID="CheckComponent" component="battery"/>
+                <Sequence name="recharging">
+                    <Action ID="NavigateToWp" goal="recharge_station" name="navigate_to_wp"/>
+                    <Action ID="Recharge"/>
+                </Sequence>
+            </Fallback>
+            <SequenceStar name="patrolling">
+                <Action ID="NavigateToWp" goal="wp_1" name="navigate_to_wp"/>
+                <Action ID="NavigateToWp" goal="wp_2" name="navigate_to_wp"/>
+                <Action ID="NavigateToWp" goal="wp_3" name="navigate_to_wp"/>
+                <Action ID="NavigateToWp" goal="wp_4" name="navigate_to_wp"/>
+                <Action ID="NavigateToWp" goal="wp_5" name="navigate_to_wp"/>
+                <Action ID="NavigateToWp" goal="wp_6" name="navigate_to_wp"/>
+                <Action ID="NavigateToWp" goal="wp_7" name="navigate_to_wp"/>
+            </SequenceStar>
+        </Sequence>
+    </BehaviorTree>
+    <!-- ////////// -->
+    <TreeNodesModel>
+        <Action ID="CheckComponent">
+            <input_port name="component"/>
+        </Action>
+        <Action ID="NavigateToWp">
+            <input_port name="goal"/>
+        </Action>
+        <Action ID="Recharge"/>
+        <Action ID="Reconfigure">
+            <input_port name="mode"/>
+        </Action>
+    </TreeNodesModel>
+    <!-- ////////// -->
+</root>
+
