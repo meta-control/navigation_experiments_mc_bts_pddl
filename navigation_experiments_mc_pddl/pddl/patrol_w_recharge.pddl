@@ -5,6 +5,7 @@
 (:types
 robot
 waypoint
+mode
 );; end Types ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Predicates ;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -15,6 +16,7 @@ waypoint
 (battery_enough ?r - robot)
 (battery_low ?r - robot)
 (charging_point_at ?wp - waypoint)
+(current_system_mode ?m - mode)
 
 );; end Predicates ;;;;;;;;;;;;;;;;;;;;
 ;; Functions ;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -23,11 +25,12 @@ waypoint
 );; end Functions ;;;;;;;;;;;;;;;;;;;;
 ;; Actions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (:durative-action move
-    :parameters (?r - robot ?wp1 ?wp2 - waypoint)
+    :parameters (?r - robot ?wp1 ?wp2 - waypoint ?m - mode)
     :duration ( = ?duration 5)
     :condition (and
         (at start(robot_at ?r ?wp1))
         (over all(battery_enough ?r))
+        (at start(current_system_mode ?m))
         )
     :effect (and
         (at start(not(robot_at ?r ?wp1)))

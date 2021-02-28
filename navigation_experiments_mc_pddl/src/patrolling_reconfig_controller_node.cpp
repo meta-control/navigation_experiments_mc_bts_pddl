@@ -26,7 +26,7 @@ class PatrollingController : public rclcpp::Node
 {
 public:
   PatrollingController()
-  : rclcpp::Node("patrolling_controller"), state_(STARTING)
+  : rclcpp::Node("patrolling_controller"), state_(INIT)
   {
   }
 
@@ -50,6 +50,7 @@ public:
     problem_expert_->addInstance(plansys2::Instance{"f_energy_saving_mode", "mode"});
     problem_expert_->addInstance(plansys2::Instance{"f_degraded_mode", "mode"});
     problem_expert_->addInstance(plansys2::Instance{"f_start_mode", "mode"});
+
     problem_expert_->addPredicate(plansys2::Predicate("(robot_at r2d2 wp_control)"));
     problem_expert_->addPredicate(plansys2::Predicate("(battery_enough r2d2)"));
     problem_expert_->addPredicate(plansys2::Predicate("(nav_sensor r2d2)"));
@@ -63,14 +64,31 @@ public:
   void step()
   {
     switch (state_) {
-      case STARTING:
-        // Set the goal for next state, and execute plan
-        problem_expert_->setGoal(plansys2::Goal("(and(patrolled wp1))"));
+      case INIT:
+        {
+          // Set the goal for next state, and execute plan
+          problem_expert_->setGoal(plansys2::Goal("(and(current_system_mode f_normal_mode))"));
 
-        if (executor_client_->executePlan()) {
-          state_ = PATROL_WP1;
+          if (executor_client_->executePlan()) {
+            state_ = STARTING;
+          }
+          break;
         }
-        break;
+      case STARTING:
+        {
+          if (executor_client_->getResult()) {
+            if (executor_client_->getResult().value().success) {
+              problem_expert_->setGoal(plansys2::Goal("(and(patrolled wp1))"));
+
+              if (executor_client_->executePlan()) {
+                state_ = PATROL_WP1;
+              }
+            } else {
+              executor_client_->executePlan();  // replan and execute
+            }
+          }
+          break;    
+        }
       case PATROL_WP1:
         {
           auto feedback = executor_client_->getFeedBack();
@@ -218,7 +236,7 @@ public:
   }
 
 private:
-  typedef enum {STARTING, PATROL_WP1, PATROL_WP2, PATROL_WP3, PATROL_WP4} StateType;
+  typedef enum {INIT, STARTING, PATROL_WP1, PATROL_WP2, PATROL_WP3, PATROL_WP4} StateType;
   StateType state_;
 
   std::shared_ptr<plansys2::ProblemExpertClient> problem_expert_;

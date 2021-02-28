@@ -45,7 +45,7 @@ void NavigateToWp::on_tick()
   goal_.qos_expected.objective_type = "f_navigate"; // should be mros_goal->qos_expected.objective_type = "f_navigate";
   diagnostic_msgs::msg::KeyValue energy_qos;
   energy_qos.key = "energy";
-  energy_qos.value = "0.5";
+  energy_qos.value = "0.7";
   diagnostic_msgs::msg::KeyValue safety_qos;
   safety_qos.key = "safety";
   safety_qos.value = "0.5";
