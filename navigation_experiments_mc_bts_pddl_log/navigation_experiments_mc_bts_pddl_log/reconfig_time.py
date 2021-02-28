@@ -47,17 +47,21 @@ class ReconfigTime(Node):
 
         self.reconfig_time_ = 0.0
         self.component_in_error_time_ = 0.0
+        self.last_mode_ = ""
     def destroy(self):
         super().destroy_node()
 
     def mode_cb(self, msg):
-       if msg.goal_mode.label == 'f_energy_saving_mode' \
-       or msg.goal_mode.label == 'f_degraded_mode':
-            self.reconfig_time_ = self.get_clock().now() - \
-            self.component_in_error_time_
-            msg = Float64()
-            msg.data = self.reconfig_time_.to_msg().sec + (self.reconfig_time_.to_msg().nanosec / 1000000000)
-            self.pub_.publish(msg)
+        if self.last_mode_ != msg.goal_mode.label:
+            if msg.goal_mode.label == 'f_energy_saving_mode' \
+            or msg.goal_mode.label == 'f_degraded_mode':
+                self.last_mode_ = msg.goal_mode.label
+                self.reconfig_time_ = self.get_clock().now() - \
+                self.component_in_error_time_
+                time_msg = Float64()
+                time_msg.data = self.reconfig_time_.to_msg().sec + (self.reconfig_time_.to_msg().nanosec / 1000000000)
+                self.pub_.publish(time_msg)
+                
 
     def diagnostics_cb(self, msg):
         for diagnostic_status in msg.status:
@@ -75,7 +79,7 @@ class ReconfigTime(Node):
                     if value == "FALSE":
                         self.component_in_error_time_ = self.get_clock().now()
                 elif component == "laser_resender":
-                    if value == "False":
+                    if value == "FALSE":
                         self.component_in_error_time_ = self.get_clock().now()
           
 def main(args=None):
