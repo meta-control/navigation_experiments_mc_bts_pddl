@@ -56,7 +56,16 @@ void NavigateToWp::on_tick()
 
 void NavigateToWp::on_wait_for_result()
 {  
+  std::string goal_id = rclcpp_action::to_string(goal_handle_->get_goal_id()); 
+  if (!goal_id.compare(feedback_->qos_status.objective_id) == 0){
+
+    RCLCPP_INFO(node_->get_logger(), "goal id and feedback are diferent");
+    rclcpp::Rate(1).sleep(); //  Wait for the goal to finish
+    return;
+  }
   RCLCPP_INFO(node_->get_logger(), "Curr mode: %s ", feedback_->qos_status.selected_mode.c_str()); 
+  
+
   // check selected_mode, f_energy_saving_mode means the robot needs battery.
   if (feedback_->qos_status.selected_mode == "f_energy_saving_mode" && 
       getInput<std::string>("goal").value() != "recharge_station") {
