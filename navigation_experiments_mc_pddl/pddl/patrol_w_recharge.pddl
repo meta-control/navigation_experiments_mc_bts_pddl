@@ -12,7 +12,6 @@ mode
 (:predicates
 
 (robot_at ?r - robot ?wp - waypoint)
-(patrolled ?wp - waypoint)
 (battery_enough ?r - robot)
 (battery_low ?r - robot)
 (charging_point_at ?wp - waypoint)
@@ -35,17 +34,6 @@ mode
     :effect (and
         (at start(not(robot_at ?r ?wp1)))
         (at end(robot_at ?r ?wp2))
-    )
-)
-
-(:durative-action patrol
-    :parameters (?r - robot ?wp - waypoint)
-    :duration ( = ?duration 5)
-    :condition (and
-        (at start(robot_at ?r ?wp))
-       )
-    :effect (and
-        (at end(patrolled ?wp))
     )
 )
 

@@ -60,7 +60,7 @@ public:
     switch (state_) {
       case STARTING:
         // Set the goal for next state, and execute plan
-        problem_expert_->setGoal(plansys2::Goal("(and(patrolled wp1))"));
+        problem_expert_->setGoal(plansys2::Goal("(and(robot_at r2d2 wp1))"));
 
         if (executor_client_->executePlan()) {
           state_ = PATROL_WP1;
@@ -80,11 +80,8 @@ public:
             if (executor_client_->getResult().value().success) {
               std::cout << "Successful finished " << std::endl;
 
-              // Cleanning up
-              problem_expert_->removePredicate(plansys2::Predicate("(patrolled wp1)"));
-
               // Set the goal for next state, and execute plan
-              problem_expert_->setGoal(plansys2::Goal("(and(patrolled wp2))"));
+              problem_expert_->setGoal(plansys2::Goal("(and(robot_at r2d2 wp2))"));
 
               if (executor_client_->executePlan()) {
                 state_ = PATROL_WP2;
@@ -115,11 +112,8 @@ public:
             if (executor_client_->getResult().value().success) {
               std::cout << "Successful finished " << std::endl;
 
-              // Cleanning up
-              problem_expert_->removePredicate(plansys2::Predicate("(patrolled wp2)"));
-
               // Set the goal for next state, and execute plan
-              problem_expert_->setGoal(plansys2::Goal("(and(patrolled wp3))"));
+              problem_expert_->setGoal(plansys2::Goal("(and(robot_at r2d2 wp3))"));
 
               if (executor_client_->executePlan()) {
                 state_ = PATROL_WP3;
@@ -150,11 +144,8 @@ public:
             if (executor_client_->getResult().value().success) {
               std::cout << "Successful finished " << std::endl;
 
-              // Cleanning up
-              problem_expert_->removePredicate(plansys2::Predicate("(patrolled wp3)"));
-
               // Set the goal for next state, and execute plan
-              problem_expert_->setGoal(plansys2::Goal("(and(patrolled wp4))"));
+              problem_expert_->setGoal(plansys2::Goal("(and(robot_at r2d2 wp4))"));
 
               if (executor_client_->executePlan()) {
                 state_ = PATROL_WP4;
@@ -185,11 +176,8 @@ public:
             if (executor_client_->getResult().value().success) {
               std::cout << "Successful finished " << std::endl;
 
-              // Cleanning up
-              problem_expert_->removePredicate(plansys2::Predicate("(patrolled wp4)"));
-
               // Set the goal for next state, and execute plan
-              problem_expert_->setGoal(plansys2::Goal("(and(patrolled wp1))"));
+              problem_expert_->setGoal(plansys2::Goal("(and(robot_at r2d2 wp1))"));
 
               if (executor_client_->executePlan()) {
                 // Loop to WP1

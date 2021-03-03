@@ -11,7 +11,6 @@ mode
 ;; Predicates ;;;;;;;;;;;;;;;;;;;;;;;;;
 (:predicates
 (robot_at ?r - robot ?wp - waypoint)
-(patrolled ?wp - waypoint)
 (battery_enough ?r - robot)
 (battery_low ?r - robot)
 (nav_sensor ?r - robot)
@@ -33,13 +32,31 @@ mode
         (at start(robot_at ?r ?wp1))
         (over all(battery_enough ?r))
         (over all(nav_sensor ?r))
+        (over all(normal_mode ?m))
         (over all(current_system_mode ?m))
-        )
+    )
     :effect (and
         (at start(not(robot_at ?r ?wp1)))
         (at end(robot_at ?r ?wp2))
     )
 )
+
+(:durative-action degraded_move
+    :parameters (?r - robot ?wp1 ?wp2 - waypoint ?m - mode)
+    :duration ( = ?duration 6)
+    :condition (and
+        (at start(robot_at ?r ?wp1))
+        (over all(battery_enough ?r))
+        (over all(nav_sensor ?r))
+        (over all(degraded_mode ?m))
+        (over all(current_system_mode ?m))
+    )
+    :effect (and
+        (at start(not(robot_at ?r ?wp1)))
+        (at end(robot_at ?r ?wp2))
+    )
+)
+
 (:durative-action reconfig_system
     :parameters (?r - robot ?m1 ?m2 - mode)
     :duration ( = ?duration 10)
@@ -47,7 +64,7 @@ mode
         (at start(current_system_mode ?m1))
     )
     :effect (and
-        (at start(not(current_system_mode ?m1)))
+        (at end(not(current_system_mode ?m1)))
         (at end(current_system_mode ?m2))
     )
 )
@@ -63,29 +80,18 @@ mode
     )
 )
 
-(:durative-action patrol
-    :parameters (?r - robot ?wp - waypoint)
-    :duration ( = ?duration 10)
-    :condition (and
-        (at start(robot_at ?r ?wp))
-       )
-    :effect (and
-        (at end(patrolled ?wp))
-    )
-)
-
 (:durative-action askcharge
     :parameters (?r - robot ?wp1 ?wp2 - waypoint ?m - mode)
     :duration ( = ?duration 5)
     :condition (and
-        (over all(battery_low_mode ?m))
-        (over all(current_system_mode ?m))
+        (at start(battery_low_mode ?m))
+        (at start(current_system_mode ?m))
         (at start(robot_at ?r ?wp1))
         (at start(charging_point_at ?wp2))
        )
     :effect (and
         (at start(not(robot_at ?r ?wp1)))
-        (at start(robot_at ?r ?wp2))
+        (at end(robot_at ?r ?wp2))
     )
 )
 
@@ -98,8 +104,8 @@ mode
         (over all(charging_point_at ?wp))
     )
     :effect (and
-         (at end(not(battery_low ?r)))
-         (at end(battery_enough ?r))
+        (at end(not(battery_low ?r)))
+        (at end(battery_enough ?r))
     )
 )
 

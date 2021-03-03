@@ -89,6 +89,7 @@ public:
   on_activate(const rclcpp_lifecycle::State & previous_state)
   {
     sys_issue_detected_ = false;
+    goal_sended_stamp_ = now();
     send_feedback(0.0, "Move starting");
     navigation_action_client_ =
       rclcpp_action::create_client<NavigateToPoseQos>(
@@ -132,7 +133,8 @@ public:
       send_goal_options.feedback_callback = [this](
       NavigationGoalHandle::SharedPtr,
       NavigationFeedback feedback) {
-        if (feedback->qos_status.selected_mode == "f_energy_saving_mode") 
+        if (feedback->qos_status.selected_mode == "f_energy_saving_mode" &&
+        now() - goal_sended_stamp_ > rclcpp::Duration::from_seconds(2.0)) 
         {
           problem_expert_->removePredicate(plansys2::Predicate("(battery_enough r2d2)"));
           problem_expert_->addPredicate(plansys2::Predicate("(battery_low r2d2)"));
@@ -210,6 +212,7 @@ private:
   double dist_to_move;
   std::string wp_to_navigate_, current_mode_;
   bool sys_issue_detected_;
+  rclcpp::Time goal_sended_stamp_;
 };
 
 int main(int argc, char ** argv)

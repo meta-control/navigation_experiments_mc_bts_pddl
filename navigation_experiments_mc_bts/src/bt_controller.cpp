@@ -39,7 +39,7 @@ int main(int argc, char ** argv)
   rclcpp::init(argc, argv);
 
   std::string pkgpath = ament_index_cpp::get_package_share_directory("navigation_experiments_mc_bts");
-  std::string xml_file = pkgpath + "/behavior_trees/bt.xml";
+  std::string xml_file = pkgpath + "/behavior_trees/bt_mc.xml";
 
   BT::BehaviorTreeFactory factory;
   BT::SharedLibrary loader;
