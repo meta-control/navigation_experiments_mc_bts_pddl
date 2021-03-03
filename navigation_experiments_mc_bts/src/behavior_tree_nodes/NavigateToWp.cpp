@@ -74,26 +74,33 @@ void NavigateToWp::on_wait_for_result()
     auto component_map = 
       config().blackboard->get<std::unordered_map<std::string, bool>>("component_map");
 
-    RCLCPP_ERROR(node_->get_logger(), "Set battery to false");
     auto battery_component = component_map.find("battery");
-    battery_component->second = false;
-    halt();
-    config().blackboard->set("component_map", component_map); 
-    result_.code = rclcpp_action::ResultCode::ABORTED;
-    goal_result_available_ = true;
+    if (battery_component->second)
+    {  
+      RCLCPP_ERROR(node_->get_logger(), "Set battery to false");
+      battery_component->second = false;
+      halt();
+      config().blackboard->set("component_map", component_map); 
+      result_.code = rclcpp_action::ResultCode::ABORTED;
+      goal_result_available_ = true;
+    }
   }
   else if (feedback_->qos_status.selected_mode == "f_degraded_mode")
   {
     RCLCPP_ERROR(node_->get_logger(), "Laser Scanner failed");
     auto component_map =
       config().blackboard->get<std::unordered_map<std::string, bool>>("component_map");
-    RCLCPP_ERROR(node_->get_logger(), "Set laser to false");
-     auto battery_component = component_map.find("laser");
-    battery_component->second = false;
-    halt();
-    config().blackboard->set("component_map", component_map); 
-    result_.code = rclcpp_action::ResultCode::ABORTED;
-    goal_result_available_ = true;
+    
+    auto laser_component = component_map.find("laser");
+    if (laser_component->second)
+    {
+      RCLCPP_ERROR(node_->get_logger(), "Set laser to false");
+      laser_component->second = false;
+      halt();
+      config().blackboard->set("component_map", component_map); 
+      result_.code = rclcpp_action::ResultCode::ABORTED;
+      goal_result_available_ = true;
+    }
   }
 
 }
