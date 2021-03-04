@@ -14,8 +14,9 @@ mode
 (robot_at ?r - robot ?wp - waypoint)
 (battery_enough ?r - robot)
 (battery_low ?r - robot)
-(charging_point_at ?wp - waypoint)
+(normal_mode ?m - mode)
 (current_system_mode ?m - mode)
+(charging_point_at ?wp - waypoint)
 
 );; end Predicates ;;;;;;;;;;;;;;;;;;;;
 ;; Functions ;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -29,8 +30,9 @@ mode
     :condition (and
         (at start(robot_at ?r ?wp1))
         (over all(battery_enough ?r))
-        (at start(current_system_mode ?m))
-        )
+        (over all(normal_mode ?m))
+        (over all(current_system_mode ?m))
+    )
     :effect (and
         (at start(not(robot_at ?r ?wp1)))
         (at end(robot_at ?r ?wp2))

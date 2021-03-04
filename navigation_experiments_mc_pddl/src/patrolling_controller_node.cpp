@@ -50,6 +50,7 @@ public:
 
     problem_expert_->addPredicate(plansys2::Predicate("(robot_at r2d2 wp_control)"));
     problem_expert_->addPredicate(plansys2::Predicate("(battery_enough r2d2)"));
+    problem_expert_->addPredicate(plansys2::Predicate("(normal_mode f_normal_mode)"));
     problem_expert_->addPredicate(plansys2::Predicate("(charging_point_at wp_control)"));
     problem_expert_->addPredicate(plansys2::Predicate("(current_system_mode f_normal_mode)"));
 
