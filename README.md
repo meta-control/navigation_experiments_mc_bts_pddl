@@ -62,6 +62,7 @@ This step launches the `mros2_metacontroller`, it launches by default the `kb.ow
 ```console
   ros2 launch mros2_reasoner launch_reasoner.launch.py
 ```
+- The reasoner does not have an objective defined at this point. So you will not see anything happenning until you launch the mission in the next step.
 
 ## Autonomous navigation. 
 
