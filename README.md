@@ -17,7 +17,7 @@ MROS is develop under Ubuntu20.04 and ROS2 Foxy, you can find the ROS2 installat
 
 The mros_reasoner uses [Owlready2](https://owlready2.readthedocs.io/en/latest/index.html) and Java to handle the ontologies and perform reasoning.
 ```console
-  sudo apt-get install openjdk-14-jre
+  sudo apt-get install openjdk-13-jre
   pip3 install owlready2
 ```
 We are focus in mobile robots and we are using the navigation2 package.
@@ -29,7 +29,7 @@ Fetch, build and install navigation2 stack:
   sudo apt install ros-foxy-slam-toolbox ros-foxy-gazebo-ros-pkgs python3-vcstool python3-rosdep2 python3-colcon-common-extensions
 
   cd [ros2_ws]/src
-  wget https://raw.githubusercontent.com/tud-cor/navigation_experiments_mc_bts_pddl_base/main/resources.repos
+  wget https://raw.githubusercontent.com/meta-control/navigation_experiments_mc_bts_pddl/main/resources.repos
   vcs import < resources.repos
   cd ..
   rosdep install -y -r -q --from-paths src --ignore-src --rosdistro foxy --skip-keys="turtlebot2_drivers map_server astra_camera amcl"
