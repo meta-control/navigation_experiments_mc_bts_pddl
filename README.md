@@ -17,7 +17,9 @@ MROS is develop under Ubuntu20.04 and ROS2 Foxy, you can find the ROS2 installat
 
 The mros_reasoner uses [Owlready2](https://owlready2.readthedocs.io/en/latest/index.html) and Java to handle the ontologies and perform reasoning.
 ```console
+  sudo apt-get update
   sudo apt-get install openjdk-13-jre
+  sudo apt-get install python3-pip
   pip3 install owlready2
 ```
 We are focus in mobile robots and we are using the navigation2 package.
