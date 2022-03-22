@@ -1,8 +1,3 @@
-# List of repositories to use within your workspace
-# See https://github.com/dirk-thomas/vcstool
-############ 
-# Example:
-############
 repositories:
   turtlebot3/turtlebot3:
     type: git
@@ -32,17 +27,21 @@ repositories:
       type: git
       url: https://github.com/fmrico/ros2_knowledge_graph.git
       version: a7da4db692ac947797ae1016ce22af919a917ccd
-  utils/mros_ontology:
+  ontologies/mros_ontology:
       type: git
-      url: git@github.com:MROS-RobMoSys-ITP/mros_ontology.git
-      version: 7a63919ec457e40e3222286f3ce4e9b173339d10
+      url: https://github.com/meta-control/mros_ontology.git
+      version: main
+  ontologies/mc_mdl_tomasys:
+      type: git
+      url: git@github.com:meta-control/mc_mdl_tomasys.git
+      version: master
   Pilot-URJC:
     type: git
     url: https://github.com/MROS-RobMoSys-ITP/Pilot-URJC.git
     version: e2126bafbd9b93b7dc91b40909ef600c94139f0e
   mc_mros_reasoner:
     type: git
-    url: https://github.com/tud-cor/mc_mros_reasoner.git
+    url: https://github.com/meta-control/mc_mros_reasoner.git
     version: cbf468975441b0c2394978c7edba55241fa04b8c
   mros_modes_observer:
     type: git
@@ -58,5 +57,5 @@ repositories:
     version: rose2021
   navigation_experiments_mc_bts_pddl:
     type: git
-    url:  https://github.com/tud-cor/navigation_experiments_mc_bts_pddl.git
+    url: https://github.com/meta-control/navigation_experiments_mc_bts_pddl.git
     version: main
