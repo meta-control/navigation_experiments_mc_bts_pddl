@@ -55,7 +55,3 @@ repositories:
     type: git
     url:  https://github.com/micro-ROS/system_modes.git
     version: rose2021
-  navigation_experiments_mc_bts_pddl:
-    type: git
-    url: https://github.com/meta-control/navigation_experiments_mc_bts_pddl.git
-    version: main
