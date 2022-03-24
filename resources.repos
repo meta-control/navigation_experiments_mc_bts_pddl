@@ -42,7 +42,7 @@ repositories:
   mc_mros_reasoner:
     type: git
     url: https://github.com/meta-control/mc_mros_reasoner.git
-    version: cbf468975441b0c2394978c7edba55241fa04b8c
+    version: foxy_devel
   mros_modes_observer:
     type: git
     url: https://github.com/MROS-RobMoSys-ITP/mros_modes_observer.git
